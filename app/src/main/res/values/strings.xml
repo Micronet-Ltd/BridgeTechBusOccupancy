@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Bridgetech Bus Occupancy</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="ops_number">OPS #</string>
+    <string name="odometer_reading">Odometer reading</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="current_odometer_reading">Current odometer reading</string>
+    <string name="logout">Logout</string>
+    <string name="resume_route">Resume route</string>
+    <string name="current_occupancy">Current occupancy</string>
+    <string name="break_type">Break type:</string>
+    <string name="login">Login</string>
+    <string name="route">Route</string>
+    <string name="pc_reset">PC Reset</string>
+    <string name="bus_number">Bus #</string>
+    <string name="submit_pc_reset">Submit PC Reset</string>
+</resources>

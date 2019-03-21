@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="routes">
+        <item>Lot 3</item>
+        <item>Lot 4</item>
+        <item>Lot 2</item>
+        <item>Charter</item>
+        <item>Special Event</item>
+        <item>540 Run</item>
+        <item>Out of Service</item>
+    </string-array>
+    <string-array name="break_types">
+        <item>Lunch</item>
+        <item>Coffee</item>
+        <item>Relief</item>
+    </string-array>
+</resources>
