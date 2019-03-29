@@ -7,13 +7,16 @@
     android:background="@drawable/fragment_background"
     android:gravity="center"
     android:layout_centerVertical="true"
+    android:paddingTop="25dp"
+    android:paddingBottom="25dp"
     android:orientation="vertical">
     <LinearLayout
         android:layout_marginHorizontal="@dimen/login_landscape_horizontal_margin"
         android:layout_marginBottom="@dimen/landscape_login_vertical_margin"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -35,9 +38,11 @@
     <LinearLayout
         android:layout_marginHorizontal="@dimen/login_landscape_horizontal_margin"
         android:layout_marginBottom="@dimen/landscape_login_vertical_margin"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:id="@+id/routes_layout">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -58,8 +63,9 @@
     <LinearLayout
         android:layout_marginHorizontal="@dimen/login_landscape_horizontal_margin"
         android:layout_marginBottom="@dimen/landscape_login_vertical_margin"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"

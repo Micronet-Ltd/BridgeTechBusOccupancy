@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class Settings {
-    private static final String SETTINGS_FILE_PATH = Environment.getDataDirectory().getPath() + "/Bridgetech/configuration.xml";
+    public static final String SETTINGS_FILE_PATH = Environment.getDataDirectory().getPath() + "/Bridgetech/configuration.xml";
     private static final Settings ourInstance = new Settings();
     private static final String TAG = "bridgetech-settings";
 
@@ -46,6 +46,12 @@ public class Settings {
     }
 
     public SparseArray<String> getBreakTypes() {
+        if(breakTypes == null || breakTypes.size() == 0) {
+            breakTypes = new SparseArray<>();
+            breakTypes.append(0, "Lunch");
+            breakTypes.append(1, "Coffee");
+            breakTypes.append(2, "Relief");
+        }
         return breakTypes;
     }
 
@@ -74,6 +80,9 @@ public class Settings {
     }
 
     public SparseArray<String> getRoutes() {
+        if(routes == null) {
+            routes = new SparseArray<>();
+        }
         return routes;
     }
 
@@ -155,7 +164,11 @@ public class Settings {
 
     private Document xmlDocument() {
         try {
-            InputStream inputStream = new FileInputStream(new File(SETTINGS_FILE_PATH));
+            File file = new File(SETTINGS_FILE_PATH);
+            if(!file.exists()) {
+                return null;
+            }
+            InputStream inputStream = new FileInputStream(file);
             DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = builderFactory.newDocumentBuilder();
             Document document = docBuilder.parse(inputStream);

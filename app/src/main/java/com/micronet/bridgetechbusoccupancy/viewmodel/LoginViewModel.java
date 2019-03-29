@@ -23,7 +23,9 @@ public class LoginViewModel extends ViewModel {
 
     public void onLogin(String opsNumber, int route, int odometerReading) {
         BusDriver.getInstance().opsNumber.setValue(opsNumber);
-        Settings.getInstance().currentRoute.setValue(route);
+        if(route != -1) {
+            Settings.getInstance().currentRoute.setValue(route);
+        }
         Bus.getInstance().odometerReading.setValue(odometerReading);
         OutgoingMessage.sendData();
     }
@@ -40,6 +42,9 @@ public class LoginViewModel extends ViewModel {
     }
 
     public int routeForElement(int i) {
+        if(i == -1) {
+            return -1;
+        }
         return routeAdapter.get(i);
     }
 }
