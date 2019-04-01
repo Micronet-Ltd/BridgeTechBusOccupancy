@@ -90,8 +90,19 @@ public class OutgoingMessage {
         data[9] = odometerArray[2];
         data[10] = odometerArray[3];
         data[11] = (byte) (0xFF & Integer.valueOf(Bus.getInstance().gatherBusNumber()).intValue());
-        data[12] = (byte) (0xFF & Objects.requireNonNull(Integer.parseInt(BusDriver.getInstance().opsNumber.getValue())).intValue());
-        data[13] = (byte) (0xFF & Objects.requireNonNull(Settings.getInstance().currentRoute.getValue()).intValue());
+
+        try {
+            data[12] = (byte) (0xFF & Objects.requireNonNull(Integer.parseInt(BusDriver.getInstance().opsNumber.getValue())).intValue());
+        }
+        catch (Exception e) {
+            data[12] = (byte)0xFF;
+        }
+        try {
+            data[13] = (byte) (0xFF & Objects.requireNonNull(Settings.getInstance().currentRoute.getValue()).intValue());
+        }
+        catch (Exception e) {
+            data[13] = (byte)0xFF;
+        }
         ByteBuffer packetIdBuffer = ByteBuffer.allocate(2);
         packetIdBuffer.putShort(packetId);
         byte[] packetIdArray = packetIdBuffer.array();

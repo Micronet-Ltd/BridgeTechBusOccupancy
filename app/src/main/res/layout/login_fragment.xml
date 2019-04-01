@@ -8,66 +8,83 @@
     android:gravity="center_horizontal">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
+        android:paddingBottom="40dp"
+        android:paddingTop="30dp"
         android:gravity="center_horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OPS Number"
-            android:textColor="@color/white"
-            android:layout_marginTop="40dp"
-            android:textSize="@dimen/text_size"/>
-        <EditText
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/ops_input"
-            android:inputType="number"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="20dp"
-            android:hint="@string/ops_number"
-            android:textSize="@dimen/text_size"
-            android:background="@drawable/rounded_border"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/route"
-            android:textColor="@color/white"
-            android:layout_marginTop="10dp"
-            android:textSize="@dimen/text_size"/>
-        <Spinner
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/routes_spinner"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OPS Number"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ops_input"
+                android:inputType="number"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:hint="@string/ops_number"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_border"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/routes"
-            android:textSize="@dimen/text_size"
-            android:background="@drawable/rounded_border">
-        </Spinner>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/odometer_reading"
-            android:textColor="@color/white"
-            android:layout_marginTop="10dp"
-            android:textSize="@dimen/text_size"/>
-        <EditText
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/routes_layout">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/route"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"/>
+            <Spinner
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:id="@+id/routes_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/routes"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_border">
+            </Spinner>
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/odometer_reading"
-            android:hint="@string/odometer_reading"
-            android:inputType="number"
-            android:textSize="@dimen/text_size"
-            android:background="@drawable/rounded_border"
-            android:layout_marginBottom="30dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/odometer_reading"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"/>
+            <EditText
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/odometer_reading"
+                android:hint="@string/odometer_reading"
+                android:inputType="number"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_border"/>
+        </LinearLayout>
         <Button
             android:id="@+id/login_button"
             android:layout_marginStart="40dp"

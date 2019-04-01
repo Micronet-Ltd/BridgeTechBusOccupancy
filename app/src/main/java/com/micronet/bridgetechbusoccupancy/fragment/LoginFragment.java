@@ -12,14 +12,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.micronet.bridgetechbusoccupancy.R;
+import com.micronet.bridgetechbusoccupancy.repository.Settings;
 import com.micronet.bridgetechbusoccupancy.utils.Log;
 import com.micronet.bridgetechbusoccupancy.viewmodel.LoginViewModel;
 
 import java.net.SocketException;
+import java.time.Duration;
 import java.util.List;
 
 public class LoginFragment extends Fragment {
@@ -28,7 +31,8 @@ public class LoginFragment extends Fragment {
     EditText opsNumberEditText;
     EditText odometerReadingEditText;
     Spinner routesSpinner;
-    int route = 0;
+    LinearLayout routesLinearLayout;
+    int route = -1;
     private static final String TAG = "LoginFragment";
 
     public static LoginFragment newInstance() {
@@ -53,21 +57,28 @@ public class LoginFragment extends Fragment {
                 }
             }
         });
-        routesSpinner = view.findViewById(R.id.routes_spinner);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.spinner_item, logInListener.getRoutes());
-        arrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        routesSpinner.setAdapter(arrayAdapter);
-        routesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                route = position;
-            }
+        routesLinearLayout = view.findViewById(R.id.routes_layout);
+        if(logInListener.getRoutes() == null || logInListener.getRoutes().isEmpty()) {
+            Toast.makeText(getContext(), "No or malformed routes, see " + Settings.SETTINGS_FILE_PATH, Toast.LENGTH_LONG).show();
+            routesLinearLayout.setVisibility(View.GONE);
+        }
+        else {
+            routesSpinner = view.findViewById(R.id.routes_spinner);
+            ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.spinner_item, logInListener.getRoutes());
+            arrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+            routesSpinner.setAdapter(arrayAdapter);
+            routesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    route = position;
+                }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // idunnolol
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // idunnolol
+                }
+            });
+        }
         return view;
     }
 
