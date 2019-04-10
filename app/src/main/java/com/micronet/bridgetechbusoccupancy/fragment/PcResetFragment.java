@@ -14,15 +14,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.micronet.bridgetechbusoccupancy.R;
+import com.micronet.bridgetechbusoccupancy.repository.Bus;
+import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
 import com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage;
 
 public class PcResetFragment extends DialogFragment {
 
     private PcResetViewModel mViewModel;
     private PcResetListener pcResetListener;
-    private EditText busNumber;
-    private EditText opsNumber;
-    private EditText occupancy;
+    private EditText busNumberEditText;
+    private EditText opsNumberEditText;
+    private EditText occupancyEditText;
 
     public static PcResetFragment newInstance(PcResetListener listener) {
         PcResetFragment fragment = new PcResetFragment();
@@ -41,9 +43,9 @@ public class PcResetFragment extends DialogFragment {
                 PcResetFragment.this.dismiss();
             }
         });
-        occupancy = view.findViewById(R.id.pc_reset_occupancy);
-        busNumber = view.findViewById(R.id.pc_reset_bus_number);
-        opsNumber = view.findViewById(R.id.pc_reset_ops);
+        occupancyEditText = view.findViewById(R.id.pc_reset_occupancy);
+        busNumberEditText = view.findViewById(R.id.pc_reset_bus_number);
+        opsNumberEditText = view.findViewById(R.id.pc_reset_ops);
         return view;
     }
 
@@ -62,14 +64,35 @@ public class PcResetFragment extends DialogFragment {
     }
 
     public interface PcResetListener {
-        void onPcReset(String busNumber, String opsNumber, String occupancy);
+        void onPcReset(int busNumber, int opsNumber, int occupancy);
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        pcResetListener.onPcReset(busNumber.getText().toString(),
-                opsNumber.getText().toString(),
-                occupancy.getText().toString());
+        int busNumber;
+        if(!busNumberEditText.getText().toString().isEmpty()) {
+            busNumber = Integer.parseInt(busNumberEditText.getText().toString());
+        }
+        else {
+            busNumber = Bus.getInstance().busNumber.getValue();
+        }
+        int opsNumber;
+        if(!opsNumberEditText.getText().toString().isEmpty()) {
+            opsNumber = Integer.parseInt(opsNumberEditText.getText().toString());
+        }
+        else {
+            opsNumber = BusDriver.getInstance().opsNumber.getValue();
+        }
+        int occupancy;
+        if(!occupancyEditText.getText().toString().isEmpty()) {
+            occupancy = Integer.parseInt(occupancyEditText.getText().toString());
+        }
+        else {
+            occupancy = Bus.getInstance().busNumber.getValue();
+        }
+        pcResetListener.onPcReset(busNumber,
+                opsNumber,
+                occupancy);
         OutgoingMessage.sendData();
         super.onDismiss(dialog);
     }

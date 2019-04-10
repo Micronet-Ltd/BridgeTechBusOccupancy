@@ -2,11 +2,7 @@ package com.micronet.bridgetechbusoccupancy;
 
 import android.app.Dialog;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,16 +15,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidchils.odometer.Odometer;
 import com.micronet.bridgetechbusoccupancy.fragment.OdometerReadingFragment;
 import com.micronet.bridgetechbusoccupancy.fragment.PcResetFragment;
 import com.micronet.bridgetechbusoccupancy.repository.Bus;
 import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
-import com.micronet.bridgetechbusoccupancy.repository.Settings;
+import com.micronet.bridgetechbusoccupancy.utils.Log;
 import com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage;
 import com.micronet.bridgetechbusoccupancy.viewmodel.MainViewModel;
-
-import java.security.Provider;
 
 public class MainActivity extends AppCompatActivity implements PcResetFragment.PcResetListener {
 
@@ -37,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
     TextView occupancy; // Don't be fooled. This is not the odometer reading.
     int currentBreakItemSelected;
     LinearLayout logoutLayout;
+    Button clockInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +56,15 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
         if(!mainViewModel.canLogOut()) {
             logoutLayout.setVisibility(View.GONE);
         }
-        final Button clockInButton = findViewById(R.id.clock_in_status_button);
+        clockInButton = findViewById(R.id.clock_in_status_button);
         clockInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean onBreak = "resume route".equals(clockInButton.getText().toString().toLowerCase());
                 updateClockInStatus(!onBreak);
-                clockInButton.setText(onBreak ? "Go on break" : "Resume route" );
             }
         });
-        updateClockInStatus(true);
+        updateClockInStatus(BusDriver.getInstance().breakType.getValue() != 99 );
         occupancy = findViewById(R.id.occupancy_view);
         mainViewModel.observeOccupancy(this, new Observer<Integer>() {
             @Override
@@ -90,20 +83,27 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
         else {
             mainViewModel.clockIn();
         }
+        clockInButton.setText(onBreak ? "Resume route" : "Go on break" );
         OutgoingMessage.sendData();
     }
 
     @Override
     public void onBackPressed() {
         if(mainViewModel.canLogOut()) {
-            super.onBackPressed();
+            promptToLogout();
         }
         else {
             Toast.makeText(this, "Cannot log out", Toast.LENGTH_LONG).show();
         }
     }
 
+
+
     public void onClickLogout(View view) {
+        promptToLogout();
+    }
+
+    private void promptToLogout() {
         android.support.v4.app.DialogFragment fragment = OdometerReadingFragment.newInstance();
         Dialog dialog = fragment.getDialog();
         fragment.show(getSupportFragmentManager(), "Odometer");
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
     }
 
     @Override
-    public void onPcReset(String busNumber, String opsNumber, String occupancy) {
+    public void onPcReset(int busNumber, int opsNumber, int occupancy) {
         if(!"".equals(busNumber)) {
             Bus.getInstance().busNumber.setValue(busNumber);
         }
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
             BusDriver.getInstance().opsNumber.setValue(opsNumber);
         }
         if(!"".equals(occupancy)) {
-            Bus.getInstance().currentOccupancy.setValue(Integer.parseInt(occupancy));
+            Bus.getInstance().currentOccupancy.setValue(occupancy);
         }
         OutgoingMessage.sendData();
     }

@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.Lo
     }
 
     @Override
-    public void onLogIn(String opsNumber, int route, int odometerReading) {
+    public void onLogIn(int opsNumber, int route, int odometerReading) {
         mViewModel.onLogin(opsNumber, mViewModel.routeForElement(route), odometerReading);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -49,5 +49,15 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.Lo
     @Override
     public List<String> getRoutes() {
         return mViewModel.routesList();
+    }
+
+    @Override
+    public int getOpsNumber() {
+        return mViewModel.getCurrentOpsNumber();
+    }
+
+    @Override
+    public int getOdometerReading() {
+        return mViewModel.getOdometerReading();
     }
 }

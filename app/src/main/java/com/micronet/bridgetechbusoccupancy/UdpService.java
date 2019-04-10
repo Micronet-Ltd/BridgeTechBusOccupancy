@@ -9,6 +9,7 @@ import com.micronet.bridgetechbusoccupancy.utils.DatagramSocketSingletonWrapper;
 import com.micronet.bridgetechbusoccupancy.utils.Log;
 
 public class UdpService extends Service {
+
     public UdpService() {
     }
 

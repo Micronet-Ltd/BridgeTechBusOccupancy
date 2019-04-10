@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class OutgoingMessage {
+public class OutgoingMessage implements TimestampProvider {
     private static String serialNumber;
     private static short packetId = 0;
     private static ConcurrentHashMap<Short, byte[]> unackedPackets;
@@ -72,7 +72,7 @@ public class OutgoingMessage {
     }
 
     private static byte[] byteRepresentation() {
-        byte[] data = new byte[16];
+        byte[] data = new byte[25];
         data[0] = 0x10;
         for(int i = 0; i <= 3; i++) {
             int v = Integer.parseInt(serialNumber().substring(i * 2, i * 2 + 2), 16);
@@ -92,22 +92,38 @@ public class OutgoingMessage {
         data[11] = (byte) (0xFF & Integer.valueOf(Bus.getInstance().gatherBusNumber()).intValue());
 
         try {
-            data[12] = (byte) (0xFF & Objects.requireNonNull(Integer.parseInt(BusDriver.getInstance().opsNumber.getValue())).intValue());
+            ByteBuffer opsNumberBuffer = ByteBuffer.allocate(2);
+            opsNumberBuffer.putShort((short)BusDriver.getInstance().opsNumber.getValue().intValue());
+            byte[] opsNumberBytes = opsNumberBuffer.array();
+            data[12] = opsNumberBytes[0];
+            data[13] = opsNumberBytes[1];
         }
         catch (Exception e) {
             data[12] = (byte)0xFF;
-        }
-        try {
-            data[13] = (byte) (0xFF & Objects.requireNonNull(Settings.getInstance().currentRoute.getValue()).intValue());
-        }
-        catch (Exception e) {
             data[13] = (byte)0xFF;
         }
+        try {
+            data[14] = (byte) (0xFF & Objects.requireNonNull(Settings.getInstance().currentRoute.getValue()).intValue());
+        }
+        catch (Exception e) {
+            data[14] = (byte)0xFF;
+        }
+        ByteBuffer timestampBuffer = ByteBuffer.allocate(8);
+        timestampBuffer.putLong(System.currentTimeMillis());
+        byte[] timestampArray = timestampBuffer.array();
+        data[15] = timestampArray[0];
+        data[16] = timestampArray[1];
+        data[17] = timestampArray[2];
+        data[18] = timestampArray[3];
+        data[19] = timestampArray[4];
+        data[20] = timestampArray[5];
+        data[21] = timestampArray[6];
+        data[22] = timestampArray[7];
         ByteBuffer packetIdBuffer = ByteBuffer.allocate(2);
         packetIdBuffer.putShort(packetId);
         byte[] packetIdArray = packetIdBuffer.array();
-        data[14] = packetIdArray[0];
-        data[15] = packetIdArray[1];
+        data[23] = packetIdArray[0];
+        data[24] = packetIdArray[1];
         unackedPackets.put(packetId, data);
         Log.d(TAG, "Sending packet with ID " + packetId);
         packetId++;
@@ -120,17 +136,22 @@ public class OutgoingMessage {
 
     private static void sendBytes(final byte[] bytes) {
         final DatagramSocket socket = DatagramSocketSingletonWrapper.getInstance().getTransmitSocket();
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     socket.send(new DatagramPacket(bytes, bytes.length));
                 } catch (IOException e) {
+                    Log.e(TAG, String.format("Could not send packet.  Error: %s", e.getMessage()));
                     e.printStackTrace();
                 }
             }
         });
+        t.start();
     }
 
-
+    @Override
+    public long getTimestamp() {
+        return System.currentTimeMillis();
+    }
 }

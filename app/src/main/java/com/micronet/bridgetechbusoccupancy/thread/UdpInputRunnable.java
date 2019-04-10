@@ -21,6 +21,7 @@ public class UdpInputRunnable implements Runnable {
     DatagramSocket socket;
     byte[] data;
 
+
     public UdpInputRunnable(DatagramSocket socket) {
         this.socket = socket;
     }
@@ -34,14 +35,14 @@ public class UdpInputRunnable implements Runnable {
                 DatagramPacket packet = new DatagramPacket(data, data.length);
                 socket.receive(packet);
                 Log.d(TAG, "Received a packet of some sort");
-                IncomingMessage message = new IncomingMessage(packet.getData());
+                IncomingMessage message = new IncomingMessage(packet.getData(), packet.getLength());
                 if(message.getMessageType() == IncomingMessage.MessageType.ACK) {
                     short packetId = message.getPacketId();
                     Log.d(TAG, String.format("Received ACK for packet with id %s", packetId));
                     OutgoingMessage.ackPacket(packetId);
                 }
                 else if(message.getMessageType() == IncomingMessage.MessageType.INCOMING_DATA) {
-                    Bus.getInstance().busNumber.postValue(String.valueOf(message.getBusNumber()));
+                    Bus.getInstance().busNumber.postValue(message.getBusNumber());
                     Bus.getInstance().currentOccupancy.postValue(message.getBusOccupancy());
                     Log.d(TAG, String.format("Received packet BUS NUMBER %s and CURRENT OCCUPANCY %d", Bus.getInstance().busNumber.getValue(), Bus.getInstance().currentOccupancy.getValue()));
                     new OutgoingAckPacket(message.getPacketId()).send();
@@ -68,6 +69,9 @@ class IncomingMessage {
     private static final byte ACK = 0x06;
     private static final byte DATA = 0x10;
 
+    private static final int ACK_PACKET_LENGTH = 3;
+    private static final int DATA_PACKET_LENGTH = 5;
+
     public enum MessageType {
         ACK,
         INCOMING_DATA,
@@ -75,16 +79,18 @@ class IncomingMessage {
     }
 
     byte[] data;
+    int length;
 
-    public IncomingMessage(byte[] receivedBytes) {
+    public IncomingMessage(byte[] receivedBytes, int length) {
         data = receivedBytes;
+        this.length = length;
     }
 
     public MessageType getMessageType() {
-        if(data[0] == ACK) {
+        if(data[0] == ACK && length == ACK_PACKET_LENGTH) {
             return MessageType.ACK;
         }
-        else if (data[0] == DATA) {
+        else if (data[0] == DATA && length == DATA_PACKET_LENGTH) {
             return MessageType.INCOMING_DATA;
         }
         else {

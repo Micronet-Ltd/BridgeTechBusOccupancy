@@ -2,11 +2,18 @@ package com.micronet.bridgetechbusoccupancy.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.Toast;
 
+import com.micronet.bridgetechbusoccupancy.BusOccupancyApplication;
+import com.micronet.bridgetechbusoccupancy.SharedPreferencesSingleton;
 import com.micronet.bridgetechbusoccupancy.utils.Distance;
+import com.micronet.bridgetechbusoccupancy.viewmodel.BusOccupancyViewModel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +48,7 @@ public class Settings {
     private boolean noLogout = false;
     private SparseArray<String> routes;
     public MutableLiveData<Integer> currentRoute;
+    private Context applicationContext;
 
     public static Settings getInstance() {
         return ourInstance;
@@ -68,7 +77,15 @@ public class Settings {
     }
 
     private Settings() {
+        applicationContext = BusOccupancyApplication.getInstance().getApplicationContext();
         currentRoute = new MutableLiveData<>();
+        currentRoute.postValue(SharedPreferencesSingleton.getInstance().getInt("currentRoute", -1));
+        currentRoute.observeForever(new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer route) {
+                SharedPreferencesSingleton.getInstance().updateInt("currentRoute", route);
+            }
+        });
         Document document = xmlDocument();
         if(document != null) {
             setServerFromDocument(document);
@@ -89,11 +106,22 @@ public class Settings {
     private void setRoutesFromDocument(Document document) {
         routes = new SparseArray<>();
         NodeList nodeList = document.getElementsByTagName("route");
+        ArrayList<Integer> duplicateIds = new ArrayList<>();
         for(int i = 0; i < nodeList.getLength(); i++) {
             Element currentElement = (Element)nodeList.item(i);
             int id = Integer.parseInt(currentElement.getAttribute("id"));
             String name = currentElement.getAttribute("name");
+            if(routes.get(id) != null) {
+                duplicateIds.add(id);
+            }
             routes.append(id, name);
+        }
+        if(!duplicateIds.isEmpty()) {
+            StringBuilder duplicateList = new StringBuilder();
+            for (Integer id : duplicateIds) {
+                duplicateList.append(id).append(" ");
+            }
+            Toast.makeText(applicationContext, String.format("Duplicate route IDs: %sIgnoring some.", duplicateList.toString()), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -112,12 +140,23 @@ public class Settings {
     private void setBreakTypesFromDocument(Document document) {
         breakTypes = new SparseArray<>();
         try {
+            List<Integer> duplicateIds = new ArrayList<>();
             NodeList nodeList = document.getElementsByTagName("entry");
             for(int i = 0; i < nodeList.getLength(); i++) {
                 Element currentElement = (Element)nodeList.item(i);
                 int id = Integer.parseInt(currentElement.getAttribute("id"));
                 String name = currentElement.getAttribute("value");
+                if(breakTypes.get(id) != null) {
+                    duplicateIds.add(id);
+                }
                 breakTypes.append(id, name);
+            }
+            if(!duplicateIds.isEmpty()) {
+                StringBuilder duplicateList = new StringBuilder();
+                for (Integer id : duplicateIds) {
+                    duplicateList.append(id).append(" ");
+                }
+                Toast.makeText(applicationContext, String.format("Duplicate break type IDs: %sIgnoring some.", duplicateList.toString()), Toast.LENGTH_LONG).show();
             }
         }
         catch (Exception e) {
@@ -157,7 +196,7 @@ public class Settings {
             port = Integer.parseInt(serverNode.getAttribute("port"));
         }
         catch (NullPointerException e) {
-            serverAddress="127.0.0.1";
+            serverAddress = "127.0.0.1";
             port = 8080;
         }
     }

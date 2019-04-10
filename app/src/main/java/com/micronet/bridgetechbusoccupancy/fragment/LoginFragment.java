@@ -17,6 +17,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.micronet.bridgetechbusoccupancy.R;
+import com.micronet.bridgetechbusoccupancy.repository.Bus;
+import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
 import com.micronet.bridgetechbusoccupancy.repository.Settings;
 import com.micronet.bridgetechbusoccupancy.utils.Log;
 import com.micronet.bridgetechbusoccupancy.viewmodel.LoginViewModel;
@@ -40,17 +42,27 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         opsNumberEditText = view.findViewById(R.id.ops_input);
+
         odometerReadingEditText = view.findViewById(R.id.odometer_reading);
+
         view.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if("".equals(opsNumberEditText.getText().toString().trim())) {
+                    Toast.makeText(getContext(), "Please enter a value for OPS number", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if("".equals(odometerReadingEditText.getText().toString().trim())) {
+                    Toast.makeText(getContext(), "Please enter a value for odometer", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 try {
                     int odometerReading = Integer.parseInt(odometerReadingEditText.getText().toString());
-                    logInListener.onLogIn(opsNumberEditText.getText().toString(), route, odometerReading);
+                    logInListener.onLogIn(Integer.parseInt(opsNumberEditText.getText().toString()), route, odometerReading);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -59,7 +71,7 @@ public class LoginFragment extends Fragment {
         });
         routesLinearLayout = view.findViewById(R.id.routes_layout);
         if(logInListener.getRoutes() == null || logInListener.getRoutes().isEmpty()) {
-            Toast.makeText(getContext(), "No or malformed routes, see " + Settings.SETTINGS_FILE_PATH, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), String.format("No or malformed routes, see %s. May have been corrupted during file transfer.", Settings.SETTINGS_FILE_PATH), Toast.LENGTH_LONG).show();
             routesLinearLayout.setVisibility(View.GONE);
         }
         else {
@@ -69,7 +81,7 @@ public class LoginFragment extends Fragment {
             routesSpinner.setAdapter(arrayAdapter);
             routesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                  public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     route = position;
                 }
 
@@ -79,6 +91,8 @@ public class LoginFragment extends Fragment {
                 }
             });
         }
+        odometerReadingEditText.setText(Bus.getInstance().odometerReading.getValue() == null ? "" : Bus.getInstance().odometerReading.getValue() + "");
+        opsNumberEditText.setText(BusDriver.getInstance().opsNumber.getValue() == null ? "" : BusDriver.getInstance().opsNumber.getValue() + "");
         return view;
     }
 
@@ -102,7 +116,9 @@ public class LoginFragment extends Fragment {
     }
 
     public interface LogInListener {
-        public void onLogIn(String opsNumber, int route, int odometerReading);
+        public void onLogIn(int opsNumber, int route, int odometerReading);
         public List<String> getRoutes();
+        public int getOpsNumber();
+        public int getOdometerReading();
     }
 }

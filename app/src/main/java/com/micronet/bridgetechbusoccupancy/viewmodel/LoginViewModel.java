@@ -17,11 +17,19 @@ public class LoginViewModel extends ViewModel {
 
     private ArrayList<Integer> routeAdapter;
 
-    public String getBusNumber() {
+    public int getCurrentOpsNumber() {
+        return BusDriver.getInstance().opsNumber.getValue();
+    }
+
+    public int getOdometerReading() {
+        return Bus.getInstance().odometerReading.getValue();
+    }
+
+    public int getBusNumber() {
         return Bus.getInstance().busNumber.getValue();
     }
 
-    public void onLogin(String opsNumber, int route, int odometerReading) {
+    public void onLogin(int opsNumber, int route, int odometerReading) {
         BusDriver.getInstance().opsNumber.setValue(opsNumber);
         if(route != -1) {
             Settings.getInstance().currentRoute.setValue(route);
