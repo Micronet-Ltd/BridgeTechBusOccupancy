@@ -92,7 +92,8 @@ public class LoginFragment extends Fragment {
             });
         }
         odometerReadingEditText.setText(Bus.getInstance().odometerReading.getValue() == null ? "" : Bus.getInstance().odometerReading.getValue() + "");
-        opsNumberEditText.setText(BusDriver.getInstance().opsNumber.getValue() == null ? "" : BusDriver.getInstance().opsNumber.getValue() + "");
+        Integer currentOpsNumber = BusDriver.getInstance().opsNumber.getValue();
+        opsNumberEditText.setText(currentOpsNumber == null || currentOpsNumber == -1 ? "" : currentOpsNumber + "");
         return view;
     }
 
