@@ -42,6 +42,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:maxLength="3"
                 android:id="@+id/pc_reset_bus_number"
                 android:background="@drawable/rounded_border"/>
         </LinearLayout>
@@ -61,6 +62,7 @@
                 android:textSize="@dimen/text_size"/>
             <EditText
                 android:layout_width="0dp"
+                android:maxLength="5"
                 android:layout_weight="1"
                 android:id="@+id/pc_reset_ops"
                 android:layout_height="wrap_content"
@@ -88,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:hint="@string/current_occupancy"
+                android:maxLength="3"
                 android:id="@+id/pc_reset_occupancy"
                 android:background="@drawable/rounded_border"/>
         </LinearLayout>
@@ -103,9 +106,5 @@
                 android:text="@string/submit_pc_reset"
                 android:textSize="@dimen/button_text_size" />
         </LinearLayout>
-        <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1"/>-->
     </LinearLayout>
 </RelativeLayout>
