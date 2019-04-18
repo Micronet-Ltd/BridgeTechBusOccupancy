@@ -34,6 +34,7 @@
             android:hint="@string/ops_number"
             android:textSize="@dimen/text_size"
             android:background="@drawable/rounded_border"
+            android:nextFocusDown="@+id/odometer_reading"
             />
     </LinearLayout>
     <LinearLayout
