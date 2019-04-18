@@ -37,6 +37,7 @@
                 android:textSize="@dimen/text_size"
                 android:background="@drawable/rounded_border"
                 android:maxLength="5"
+                android:nextFocusDown="@+id/odometer_reading"
                 />
         </LinearLayout>
         <LinearLayout
