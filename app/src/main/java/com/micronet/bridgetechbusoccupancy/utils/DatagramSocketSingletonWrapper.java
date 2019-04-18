@@ -19,11 +19,11 @@ public class DatagramSocketSingletonWrapper {
 
     private DatagramSocketSingletonWrapper() {
         try {
-            receiveSocket = new DatagramSocket(8080);
-            receiveSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getPort());
+            receiveSocket = new DatagramSocket(Settings.getInstance().getRxPort());
+            receiveSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
 
-            transmitSocket = new DatagramSocket(8081);
-            transmitSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getPort());
+            transmitSocket = new DatagramSocket(Settings.getInstance().getTxPort());
+            transmitSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {

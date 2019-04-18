@@ -1,6 +1,5 @@
 package com.micronet.bridgetechbusoccupancy.repository;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
@@ -13,12 +12,9 @@ import android.widget.Toast;
 import com.micronet.bridgetechbusoccupancy.BusOccupancyApplication;
 import com.micronet.bridgetechbusoccupancy.SharedPreferencesSingleton;
 import com.micronet.bridgetechbusoccupancy.utils.Distance;
-import com.micronet.bridgetechbusoccupancy.viewmodel.BusOccupancyViewModel;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -28,8 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,7 +36,9 @@ public class Settings {
     private static final String TAG = "bridgetech-settings";
 
     private String serverAddress;
-    private int port;
+    private int serverPort;
+    private int rxPort;
+    private int txPort;
     private Distance odometerErrorThreshold;
     private SparseArray<String> breakTypes;
     private boolean noLogout = false;
@@ -52,6 +48,14 @@ public class Settings {
 
     public static Settings getInstance() {
         return ourInstance;
+    }
+
+    public int getRxPort() {
+        return rxPort;
+    }
+
+    public int getTxPort() {
+        return txPort;
     }
 
     public SparseArray<String> getBreakTypes() {
@@ -64,8 +68,8 @@ public class Settings {
         return breakTypes;
     }
 
-    public int getPort() {
-        return port;
+    public int getServerPort() {
+        return serverPort;
     }
 
     public String getServerAddress() {
@@ -190,14 +194,44 @@ public class Settings {
     }
 
     private void setServerFromDocument(Document document) {
+        Element serverNode;
         try {
-            Element serverNode = (Element) document.getElementsByTagName("server").item(0);
-            serverAddress = serverNode.getAttribute("address");
-            port = Integer.parseInt(serverNode.getAttribute("port"));
+            serverNode = (Element) document.getElementsByTagName("server").item(0);
         }
         catch (NullPointerException e) {
             serverAddress = "127.0.0.1";
-            port = 8080;
+            serverPort = 8080;
+            rxPort = 8080;
+            txPort = 8081;
+            return;
+        }
+
+        try {
+            serverAddress = serverNode.getAttribute("address");
+        }
+        catch (NullPointerException e) {
+            serverAddress = "127.0.0.1";
+        }
+
+        try {
+            serverPort = Integer.parseInt(serverNode.getAttribute("port"));
+        }
+        catch (NullPointerException e) {
+            serverPort = 8080;
+        }
+
+        try {
+            rxPort = Integer.parseInt(serverNode.getAttribute("rx-port"));
+        }
+        catch (NullPointerException e) {
+            rxPort = 8080;
+        }
+
+        try {
+            txPort = Integer.parseInt(serverNode.getAttribute("tx-port"));
+        }
+        catch (NullPointerException e) {
+            txPort = 8081;
         }
     }
 
