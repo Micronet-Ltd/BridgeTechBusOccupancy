@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_border"
                 android:hint="@string/odometer_reading"
+                android:maxLength="10"
                 android:inputType="number"
                 android:textSize="@dimen/text_size" />
         </LinearLayout>

@@ -30,6 +30,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/ops_input"
             android:inputType="number"
+            android:maxLength="5"
             android:hint="@string/ops_number"
             android:textSize="@dimen/text_size"
             android:background="@drawable/rounded_border"
@@ -80,6 +81,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/odometer_reading"
             android:hint="@string/odometer_reading"
+            android:maxLength="10"
             android:inputType="number"
             android:textSize="@dimen/text_size"
             android:background="@drawable/rounded_border"/>
