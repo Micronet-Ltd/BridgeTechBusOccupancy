@@ -27,7 +27,9 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
 
     Spinner breakSpinner;
     MainViewModel mainViewModel;
-    TextView occupancy; // Don't be fooled. This is not the odometer reading.
+    TextView occupancy;
+    TextView opsNumber;
+    TextView busNumber;
     int currentBreakItemSelected;
     LinearLayout logoutLayout;
     Button clockInButton;
@@ -66,10 +68,25 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
         });
         updateClockInStatus(BusDriver.getInstance().breakType.getValue() != 99 );
         occupancy = findViewById(R.id.occupancy_view);
+        opsNumber = findViewById(R.id.ops_number_view);
+        busNumber = findViewById(R.id.bus_number_view);
+
         mainViewModel.observeOccupancy(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer integer) {
                 occupancy.setText(integer.toString());
+            }
+        });
+        mainViewModel.observeOpsNumber(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                opsNumber.setText(integer.toString());
+            }
+        });
+        mainViewModel.observeBusNumber(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer integer) {
+                busNumber.setText(integer.toString());
             }
         });
     }

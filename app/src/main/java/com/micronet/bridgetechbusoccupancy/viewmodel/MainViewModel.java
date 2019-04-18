@@ -42,4 +42,12 @@ public class MainViewModel extends ViewModel {
     public void observeOccupancy(LifecycleOwner owner, Observer<Integer> observer) {
         Bus.getInstance().currentOccupancy.observe(owner, observer);
     }
+
+    public void observeOpsNumber(LifecycleOwner owner, Observer<Integer> observer) {
+        BusDriver.getInstance().opsNumber.observe(owner, observer);
+    }
+
+    public void observeBusNumber(LifecycleOwner owner, Observer<Integer> observer) {
+        Bus.getInstance().busNumber.observe(owner, observer);
+    }
 }

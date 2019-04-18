@@ -14,35 +14,75 @@
         android:background="@drawable/background">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_gravity="center_vertical"
             android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:id="@+id/occupancy"
-            android:layout_marginBottom="@dimen/main_vertical_margin_landscape"
-            android:layout_weight="1">
-            <TextView
-                android:layout_marginLeft="@dimen/main_landscape_left_margin"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/current_occupancy"
-                android:textSize="@dimen/text_size"
-                android:textColor="@color/white"/>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/occupancy">
                 <TextView
-                    android:id="@+id/occupancy_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:background="@color/black"
-                    android:fontFamily="serif-monospace"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/current_occupancy"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/occupancy_view"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25pt"
                     android:textColor="@color/white"
-                    android:textSize="28pt" />
+                    android:fontFamily="serif-monospace"
+                    android:background="@color/black"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/bus_number"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/bus_number_view"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25pt"
+                    android:textColor="@color/white"
+                    android:fontFamily="serif-monospace"
+                    android:background="@color/black"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/ops_number"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/ops_number_view"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25pt"
+                    android:textColor="@color/white"
+                    android:fontFamily="serif-monospace"
+                    android:background="@color/black"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
