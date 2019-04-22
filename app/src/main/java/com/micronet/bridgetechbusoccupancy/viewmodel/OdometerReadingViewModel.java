@@ -8,4 +8,13 @@ public class OdometerReadingViewModel extends ViewModel {
     public void setOdometerReading(int odometerReading) {
         Bus.getInstance().odometerReading.setValue(odometerReading);
     }
+
+    public int getOdometerReading() {
+        try {
+            return Bus.getInstance().odometerReading.getValue();
+        }
+        catch (NullPointerException e) {
+            return 0;
+        }
+    }
 }
