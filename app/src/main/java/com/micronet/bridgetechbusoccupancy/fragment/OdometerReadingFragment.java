@@ -65,13 +65,19 @@ public class OdometerReadingFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_odometer_reading, container, false);
         odometerReading = view.findViewById(R.id.logout_odometer_reading);
+        odometerReading.setText(String.valueOf(mViewModel.getOdometerReading()));
         view.findViewById(R.id.logout_odometer_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.setOdometerReading(Integer.parseInt(odometerReading.getText().toString()));
-                OutgoingMessage.sendData();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
+                try {
+                    mViewModel.setOdometerReading(Integer.parseInt(odometerReading.getText().toString()));
+                    OutgoingMessage.sendData();
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    startActivity(intent);
+                }
+                catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Odometer reading cannot be blank.", Toast.LENGTH_LONG).show();
+                }
             }
         });
         return view;
