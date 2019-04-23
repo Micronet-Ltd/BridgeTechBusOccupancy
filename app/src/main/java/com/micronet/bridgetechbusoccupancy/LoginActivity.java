@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -40,8 +41,8 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.Lo
     }
 
     @Override
-    public void onLogIn(int opsNumber, int route, int odometerReading) {
-        mViewModel.onLogin(opsNumber, mViewModel.routeForElement(route), odometerReading);
+    public void onLogIn(int opsNumber, int route, int odometerReading, int busNumber) {
+        mViewModel.onLogin(opsNumber, mViewModel.routeForElement(route), odometerReading, busNumber);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }

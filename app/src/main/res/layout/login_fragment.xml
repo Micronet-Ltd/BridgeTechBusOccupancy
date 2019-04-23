@@ -15,6 +15,32 @@
         android:paddingTop="30dp"
         android:gravity="center_horizontal">
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bus_number_label"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bus_input"
+                android:inputType="number"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:hint="@string/bus_number"
+                android:textSize="@dimen/text_size"
+                android:background="@drawable/rounded_border"
+                android:maxLength="3"
+                android:nextFocusDown="@id/ops_input"/>
+        </LinearLayout>
+        <LinearLayout
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -23,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OPS Number"
+                android:text="@string/ops_number_label"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size"/>
             <EditText

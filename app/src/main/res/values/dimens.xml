@@ -11,4 +11,6 @@
     <dimen name="login_landscape_horizontal_margin">30dp</dimen>
     <dimen name="main_vertical_margin_landscape">6dp</dimen>
     <dimen name="main_landscape_left_margin">17dp</dimen>
+    <dimen name="landscape_login_text_size">20pt</dimen>
+    <dimen name="landscape_edittext_size">20pt</dimen>
 </resources>
