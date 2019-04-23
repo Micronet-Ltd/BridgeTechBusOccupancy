@@ -33,4 +33,6 @@
     <string name="bus_number">Bus #</string>
     <string name="submit_pc_reset">Submit PC Reset</string>
     <string name="occupancy">Occupancy</string>
+    <string name="ops_number_label">OPS Number</string>
+    <string name="bus_number_label">Bus number</string>
 </resources>

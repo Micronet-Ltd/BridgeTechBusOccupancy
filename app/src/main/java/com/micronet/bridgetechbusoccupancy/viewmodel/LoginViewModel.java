@@ -29,12 +29,13 @@ public class LoginViewModel extends ViewModel {
         return Bus.getInstance().busNumber.getValue();
     }
 
-    public void onLogin(int opsNumber, int route, int odometerReading) {
+    public void onLogin(int opsNumber, int route, int odometerReading, int busNumber) {
         BusDriver.getInstance().opsNumber.setValue(opsNumber);
         if(route != -1) {
             Settings.getInstance().currentRoute.setValue(route);
         }
         Bus.getInstance().odometerReading.setValue(odometerReading);
+        Bus.getInstance().busNumber.setValue(busNumber);
         OutgoingMessage.sendData();
     }
 

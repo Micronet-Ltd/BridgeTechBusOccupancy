@@ -32,6 +32,7 @@ public class LoginFragment extends Fragment {
     LogInListener logInListener;
     EditText opsNumberEditText;
     EditText odometerReadingEditText;
+    EditText busNumberEditText;
     Spinner routesSpinner;
     LinearLayout routesLinearLayout;
     int route = -1;
@@ -48,6 +49,7 @@ public class LoginFragment extends Fragment {
         opsNumberEditText = view.findViewById(R.id.ops_input);
 
         odometerReadingEditText = view.findViewById(R.id.odometer_reading);
+        busNumberEditText = view.findViewById(R.id.bus_input);
 
         view.findViewById(R.id.login_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,9 +62,13 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getContext(), "Please enter a value for odometer", Toast.LENGTH_LONG).show();
                     return;
                 }
+                if("".equals(busNumberEditText.getText().toString().trim())) {
+                    Toast.makeText(getContext(), "Please enter a value for bus number", Toast.LENGTH_LONG).show();
+                }
                 try {
                     int odometerReading = Integer.parseInt(odometerReadingEditText.getText().toString());
-                    logInListener.onLogIn(Integer.parseInt(opsNumberEditText.getText().toString()), route, odometerReading);
+                    int busNumber = Integer.parseInt(busNumberEditText.getText().toString());
+                    logInListener.onLogIn(Integer.parseInt(opsNumberEditText.getText().toString()), route, odometerReading, busNumber);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -94,6 +100,13 @@ public class LoginFragment extends Fragment {
         odometerReadingEditText.setText(Bus.getInstance().odometerReading.getValue() == null ? "" : Bus.getInstance().odometerReading.getValue() + "");
         Integer currentOpsNumber = BusDriver.getInstance().opsNumber.getValue();
         opsNumberEditText.setText(currentOpsNumber == null || currentOpsNumber == -1 ? "" : currentOpsNumber + "");
+
+        Integer currentBusNumber = Bus.getInstance().busNumber.getValue();
+        busNumberEditText.setText(currentBusNumber == null ? "" : currentBusNumber + "");
+
+        Integer currentOdometerReading = Bus.getInstance().odometerReading.getValue();
+        odometerReadingEditText.setText(currentOdometerReading == null ? "" : currentOdometerReading + "");
+
         return view;
     }
 
@@ -117,7 +130,7 @@ public class LoginFragment extends Fragment {
     }
 
     public interface LogInListener {
-        public void onLogIn(int opsNumber, int route, int odometerReading);
+        public void onLogIn(int opsNumber, int route, int odometerReading, int busNumber);
         public List<String> getRoutes();
         public int getOpsNumber();
         public int getOdometerReading();
