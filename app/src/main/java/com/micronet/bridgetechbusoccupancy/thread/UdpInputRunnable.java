@@ -137,7 +137,7 @@ class OutgoingAckPacket {
 
     public void send() {
         try {
-            DatagramSocket socket = DatagramSocketSingletonWrapper.getInstance().getTransmitSocket();
+            DatagramSocket socket = DatagramSocketSingletonWrapper.getInstance().getSocket();
             socket.send(new DatagramPacket(data, data.length));
         } catch (SocketException e) {
             e.printStackTrace();

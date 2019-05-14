@@ -24,7 +24,7 @@ public class UdpService extends Service {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                    Thread t = new Thread(new UdpInputRunnable(DatagramSocketSingletonWrapper.getInstance().getReceiveSocket()));
+                    Thread t = new Thread(new UdpInputRunnable(DatagramSocketSingletonWrapper.getInstance().getSocket()));
                     t.start();
             }
         });

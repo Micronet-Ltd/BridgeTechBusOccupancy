@@ -10,8 +10,7 @@ import java.net.UnknownHostException;
 public class DatagramSocketSingletonWrapper {
     private static final DatagramSocketSingletonWrapper ourInstance = new DatagramSocketSingletonWrapper();
 
-    private DatagramSocket receiveSocket;
-    private DatagramSocket transmitSocket;
+    private DatagramSocket socket;
 
     public static DatagramSocketSingletonWrapper getInstance() {
         return ourInstance;
@@ -19,11 +18,8 @@ public class DatagramSocketSingletonWrapper {
 
     private DatagramSocketSingletonWrapper() {
         try {
-            receiveSocket = new DatagramSocket(Settings.getInstance().getRxPort());
-            receiveSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
-
-            transmitSocket = new DatagramSocket(Settings.getInstance().getTxPort());
-            transmitSocket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
+            socket = new DatagramSocket(Settings.getInstance().getRxPort());
+            socket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
@@ -31,11 +27,7 @@ public class DatagramSocketSingletonWrapper {
         }
     }
 
-    public DatagramSocket getReceiveSocket() {
-        return receiveSocket;
-    }
-
-    public DatagramSocket getTransmitSocket() {
-        return transmitSocket;
+    public DatagramSocket getSocket() {
+        return socket;
     }
 }

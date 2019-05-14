@@ -10,9 +10,7 @@ import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class OutgoingMessage implements TimestampProvider {
@@ -135,7 +133,7 @@ public class OutgoingMessage implements TimestampProvider {
     }
 
     private static void sendBytes(final byte[] bytes) {
-        final DatagramSocket socket = DatagramSocketSingletonWrapper.getInstance().getTransmitSocket();
+        final DatagramSocket socket = DatagramSocketSingletonWrapper.getInstance().getSocket();
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
