@@ -35,21 +35,9 @@ public class UdpInputRunnable implements Runnable {
                 DatagramPacket packet = new DatagramPacket(data, data.length);
                 socket.receive(packet);
                 Log.d(TAG, "Received a packet of some sort");
-                IncomingMessage message = new IncomingMessage(packet.getData(), packet.getLength());
-                if(message.getMessageType() == IncomingMessage.MessageType.ACK) {
-                    short packetId = message.getPacketId();
-                    Log.d(TAG, String.format("Received ACK for packet with id %s", packetId));
-                    OutgoingMessage.ackPacket(packetId);
-                }
-                else if(message.getMessageType() == IncomingMessage.MessageType.INCOMING_DATA) {
-                    Bus.getInstance().busNumber.postValue(message.getBusNumber());
-                    Bus.getInstance().currentOccupancy.postValue(message.getBusOccupancy());
-                    Log.d(TAG, String.format("Received packet BUS NUMBER %s and CURRENT OCCUPANCY %d", Bus.getInstance().busNumber.getValue(), Bus.getInstance().currentOccupancy.getValue()));
-                    new OutgoingAckPacket(message.getPacketId()).send();
-                }
-                else if(message.getMessageType() == IncomingMessage.MessageType.MALFORMED_MESSAGE) {
-                    Log.d(TAG, "Malformed message received, ignoring.");
-                }
+                IncomingMessage message = new IncomingMessage(packet.getData(), packet.getLength(), packet.getOffset());
+                Thread t = new Thread(new MessageHandler(message));
+                t.start();
             }
         } catch (SocketException e) {
             e.printStackTrace();
@@ -62,6 +50,33 @@ public class UdpInputRunnable implements Runnable {
 
     public void stop() {
         isRunning = false;
+    }
+}
+
+class MessageHandler implements Runnable {
+    private IncomingMessage message;
+    private static final String TAG = "Bridgetech-UDP";
+
+    public MessageHandler(IncomingMessage message) {
+        this.message = message;
+    }
+
+    @Override
+    public void run() {
+        if(message.getMessageType() == IncomingMessage.MessageType.ACK) {
+            short packetId = message.getPacketId();
+            Log.d(TAG, String.format("Received ACK for packet with id %s", packetId));
+            OutgoingMessage.ackPacket(packetId);
+        }
+        else if(message.getMessageType() == IncomingMessage.MessageType.INCOMING_DATA) {
+            Bus.getInstance().busNumber.postValue(message.getBusNumber());
+            Bus.getInstance().currentOccupancy.postValue(message.getBusOccupancy());
+            Log.d(TAG, String.format("Received packet BUS NUMBER %s and CURRENT OCCUPANCY %d", Bus.getInstance().busNumber.getValue(), Bus.getInstance().currentOccupancy.getValue()));
+            new OutgoingAckPacket(message.getPacketId()).send();
+        }
+        else if(message.getMessageType() == IncomingMessage.MessageType.MALFORMED_MESSAGE) {
+            Log.d(TAG, "Malformed message received, ignoring.");
+        }
     }
 }
 
@@ -81,8 +96,9 @@ class IncomingMessage {
     byte[] data;
     int length;
 
-    public IncomingMessage(byte[] receivedBytes, int length) {
-        data = receivedBytes;
+    public IncomingMessage(byte[] receivedBytes, int length, int offset) {
+        data = new byte[length];
+        System.arraycopy(receivedBytes, offset, data, 0, length);
         this.length = length;
     }
 
@@ -96,7 +112,6 @@ class IncomingMessage {
         else {
             return MessageType.MALFORMED_MESSAGE;
         }
-
     }
 
     public short getPacketId() {
