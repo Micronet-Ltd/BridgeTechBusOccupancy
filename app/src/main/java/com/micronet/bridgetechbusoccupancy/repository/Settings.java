@@ -38,7 +38,6 @@ public class Settings {
     private String serverAddress;
     private int serverPort;
     private int rxPort;
-    private int txPort;
     private Distance odometerErrorThreshold;
     private SparseArray<String> breakTypes;
     private boolean noLogout = false;
@@ -52,10 +51,6 @@ public class Settings {
 
     public int getRxPort() {
         return rxPort;
-    }
-
-    public int getTxPort() {
-        return txPort;
     }
 
     public SparseArray<String> getBreakTypes() {
@@ -202,7 +197,6 @@ public class Settings {
             serverAddress = "127.0.0.1";
             serverPort = 8080;
             rxPort = 8080;
-            txPort = 8081;
             return;
         }
 
@@ -223,15 +217,10 @@ public class Settings {
         try {
             rxPort = Integer.parseInt(serverNode.getAttribute("rx-port"));
         }
-        catch (NullPointerException e) {
+        catch (Exception e) {
             rxPort = 8080;
-        }
-
-        try {
-            txPort = Integer.parseInt(serverNode.getAttribute("tx-port"));
-        }
-        catch (NullPointerException e) {
-            txPort = 8081;
+            Log.e(TAG, String.format("RX port does not exist, defaulting to %d", rxPort));
+            Log.e(TAG, "RX port exception: " + e.getMessage());
         }
     }
 
