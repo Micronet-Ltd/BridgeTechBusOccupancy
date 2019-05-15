@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -142,6 +145,7 @@ public class OutgoingMessage implements TimestampProvider {
                 } catch (IOException e) {
                     Log.e(TAG, String.format("Could not send packet.  Error: %s", e.getMessage()));
                     e.printStackTrace();
+                    DatagramSocketSingletonWrapper.getInstance().connectToServer();
                 }
             }
         });
