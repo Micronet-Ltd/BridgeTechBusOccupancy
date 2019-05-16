@@ -22,12 +22,19 @@ public class DatagramSocketSingletonWrapper {
     }
 
     public void connectToServer() {
+        connectToServer(null);
+    }
+
+    public void connectToServer(final Runnable runAfterConnected) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     socket = new DatagramSocket(Settings.getInstance().getRxPort());
                     socket.connect(InetAddress.getByName(Settings.getInstance().getServerAddress()), Settings.getInstance().getServerPort());
+                    if(runAfterConnected != null) {
+                        runAfterConnected.run();
+                    }
                 } catch (UnknownHostException e) {
                     Log.e(TAG, String.format("Unknown host exception message: %s", e.getMessage()));
                     e.printStackTrace();

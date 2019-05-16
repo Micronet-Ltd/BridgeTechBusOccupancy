@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.micronet.bridgetechbusoccupancy.SharedPreferencesSingleton;
+import com.micronet.bridgetechbusoccupancy.repository.Bus;
 import com.micronet.bridgetechbusoccupancy.utils.DatagramSocketSingletonWrapper;
 import com.micronet.bridgetechbusoccupancy.utils.Log;
+import com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage;
 
 import java.net.SocketException;
 import java.net.UnknownHostException;
@@ -21,10 +23,17 @@ public class BusOccupancyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         SharedPreferencesSingleton.getInstance().initialize(getApplicationContext());
+        Bus.initialize();
         instance = this;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        DatagramSocketSingletonWrapper.getInstance().connectToServer(new Runnable() {
+            @Override
+            public void run() {
+                OutgoingMessage.sendData();
+            }
+        });
         registerReceiver(new ConnectivityChangedReceiver(), filter);
     }
 

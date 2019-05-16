@@ -31,6 +31,10 @@ public class Bus extends Observable implements BusInfoProvider  {
         return ourInstance;
     }
 
+    public static void initialize() {
+        ourInstance = new Bus();
+    }
+
     private Bus() {
         super();
         provider = this;
@@ -38,9 +42,9 @@ public class Bus extends Observable implements BusInfoProvider  {
             busNumber = new MutableLiveData<>();
         }
         currentOccupancy = new MutableLiveData<>();
-        currentOccupancy.postValue(SharedPreferencesSingleton.getInstance().getInt("occupancy", 0));
+        currentOccupancy.setValue(SharedPreferencesSingleton.getInstance().getInt("occupancy", 0));
         odometerReading = new MutableLiveData<>();
-        odometerReading.postValue(SharedPreferencesSingleton.getInstance().getInt("odometer", 0));
+        odometerReading.setValue(SharedPreferencesSingleton.getInstance().getInt("odometer", 0));
         busNumber.setValue(gatherBusNumber());
         Log.d(TAG, "Bus number: " + busNumber.getValue());
         currentOccupancy.observeForever(new Observer<Integer>() {
