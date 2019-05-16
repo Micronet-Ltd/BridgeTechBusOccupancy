@@ -31,7 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class Settings {
-    public static final String SETTINGS_FILE_PATH = Environment.getDataDirectory().getPath() + "/Bridgetech/configuration.xml";
+    public static final String SETTINGS_FILE_PATH = "/sdcard/BridgetechApp/configuration.xml";
     private static final Settings ourInstance = new Settings();
     private static final String TAG = "bridgetech-settings";
 

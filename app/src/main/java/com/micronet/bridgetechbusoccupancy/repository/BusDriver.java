@@ -14,6 +14,12 @@ public class BusDriver extends Observable {
     public MutableLiveData<Integer> breakType;
     public MutableLiveData<Integer> opsNumber;
 
+    public static void initialize() {
+        if(ourInstance == null) {
+            ourInstance = new BusDriver();
+        }
+    }
+
 
     public static BusDriver getInstance() {
         if(ourInstance == null) {
