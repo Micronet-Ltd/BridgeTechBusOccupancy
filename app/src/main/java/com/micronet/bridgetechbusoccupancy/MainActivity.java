@@ -91,6 +91,22 @@ public class MainActivity extends AppCompatActivity implements PcResetFragment.P
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Start keep alive mechanism
+        mainViewModel.startKeepAliveMechanism();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Stop keep alive mechanism
+        mainViewModel.stopKeepAliveMechanism();
+    }
+
     private void updateClockInStatus(boolean onBreak) {
         TextView view = findViewById(R.id.clock_in_status);
         view.setText(String.format("Status: %s", onBreak ? "On break" : "On shift"));
