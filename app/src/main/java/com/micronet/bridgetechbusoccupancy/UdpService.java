@@ -1,5 +1,8 @@
 package com.micronet.bridgetechbusoccupancy;
 
+import static com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage.startKeepAliveMechanism;
+import static com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage.stopKeepAliveMechanism;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -30,5 +33,20 @@ public class UdpService extends Service {
         });
         thread.start();
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // Start keep alive mechanism
+        startKeepAliveMechanism();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        stopKeepAliveMechanism();
     }
 }

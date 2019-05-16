@@ -1,5 +1,6 @@
 package com.micronet.bridgetechbusoccupancy.utils;
 
+import android.os.Handler;
 import com.micronet.bridgetechbusoccupancy.repository.Bus;
 import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
 import com.micronet.bridgetechbusoccupancy.repository.Settings;
@@ -37,6 +38,9 @@ public class OutgoingMessage implements TimestampProvider {
             }
         }
     });
+
+    private static Handler keepAliveHandler;
+    private static int keepAliveInterval = 60000;
 
     static {
         unackedPackets = new ConcurrentHashMap<>();
@@ -156,4 +160,28 @@ public class OutgoingMessage implements TimestampProvider {
     public long getTimestamp() {
         return System.currentTimeMillis();
     }
+
+    public static void startKeepAliveMechanism() {
+        keepAliveHandler = new Handler();
+
+        // Every 60 seconds ping the server to keep address up to date.
+        keepAliveHandler.postDelayed(keepAliveUpdate, keepAliveInterval);
+//        Log.d("Bridgetech-KeepAlive", "Started keep alive handler.");
+    }
+
+    public static void stopKeepAliveMechanism() {
+        if(keepAliveHandler != null){
+            keepAliveHandler.removeCallbacks(keepAliveUpdate);
+//            Log.d("Bridgetech-KeepAlive", "Stopped keep alive handler.");
+        }
+    }
+
+    private static Runnable keepAliveUpdate = new Runnable() {
+        @Override
+        public void run() {
+            sendData();
+//            Log.d("Bridgetech-KeepAlive", "Sent keep alive message.");
+            keepAliveHandler.postDelayed(this, keepAliveInterval);
+        }
+    };
 }

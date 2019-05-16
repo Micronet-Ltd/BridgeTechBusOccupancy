@@ -11,7 +11,6 @@ import com.micronet.bridgetechbusoccupancy.repository.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 
 public class MainViewModel extends ViewModel {
     private List<Integer> breakAdapter;
