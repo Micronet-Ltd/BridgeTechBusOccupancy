@@ -88,7 +88,7 @@ public class PcResetFragment extends DialogFragment {
             occupancy = Integer.parseInt(occupancyEditText.getText().toString());
         }
         else {
-            occupancy = Bus.getInstance().busNumber.getValue();
+            occupancy = Bus.getInstance().currentOccupancy.getValue();
         }
         pcResetListener.onPcReset(busNumber,
                 opsNumber,
