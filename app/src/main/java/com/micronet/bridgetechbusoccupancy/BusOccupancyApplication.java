@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 
 import com.micronet.bridgetechbusoccupancy.SharedPreferencesSingleton;
 import com.micronet.bridgetechbusoccupancy.repository.Bus;
+import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
 import com.micronet.bridgetechbusoccupancy.utils.DatagramSocketSingletonWrapper;
 import com.micronet.bridgetechbusoccupancy.utils.Log;
 import com.micronet.bridgetechbusoccupancy.utils.OutgoingMessage;
@@ -24,6 +25,7 @@ public class BusOccupancyApplication extends Application {
         super.onCreate();
         SharedPreferencesSingleton.getInstance().initialize(getApplicationContext());
         Bus.initialize();
+        BusDriver.initialize();
         instance = this;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
