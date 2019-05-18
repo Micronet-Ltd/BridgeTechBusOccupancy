@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
+import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.micronet.bridgetechbusoccupancy.BusOccupancyApplication;
@@ -23,6 +24,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,13 +110,19 @@ public class Settings {
         NodeList nodeList = document.getElementsByTagName("route");
         ArrayList<Integer> duplicateIds = new ArrayList<>();
         for(int i = 0; i < nodeList.getLength(); i++) {
-            Element currentElement = (Element)nodeList.item(i);
-            int id = Integer.parseInt(currentElement.getAttribute("id"));
-            String name = currentElement.getAttribute("name");
-            if(routes.get(id) != null) {
-                duplicateIds.add(id);
+            try {
+                Element currentElement = (Element) nodeList.item(i);
+                int id = Integer.parseInt(currentElement.getAttribute("id"));
+                String name = currentElement.getAttribute("name");
+                if (routes.get(id) != null) {
+                    duplicateIds.add(id);
+                }
+                routes.append(id, name);
             }
-            routes.append(id, name);
+            catch (NumberFormatException e) {
+                Toast.makeText(applicationContext, "Route IDs must be integers.", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Invalid ID. Ignoring.");
+            }
         }
         if(!duplicateIds.isEmpty()) {
             StringBuilder duplicateList = new StringBuilder();
@@ -188,6 +197,21 @@ public class Settings {
         }
     }
 
+    private boolean isValidIpv4Address(String address) {
+        String[] tokens = address.split("\\.");
+        if(tokens.length != 4) return false;
+        for (String token : tokens) {
+            try {
+                int i = Integer.parseInt(token);
+                if(i < 0 || i > 255) return false;
+            }
+            catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void setServerFromDocument(Document document) {
         Element serverNode;
         try {
@@ -202,16 +226,32 @@ public class Settings {
 
         try {
             serverAddress = serverNode.getAttribute("address");
+            if(!(URLUtil.isValidUrl(serverAddress) || isValidIpv4Address(serverAddress))) {
+                Toast.makeText(applicationContext, "Server address invalid. Defaulting to localhost.", Toast.LENGTH_LONG).show();
+                serverAddress = "127.0.0.1";
+            }
         }
         catch (NullPointerException e) {
+            Toast.makeText(applicationContext, "No server address. Defaulting to localhost.", Toast.LENGTH_LONG).show();
             serverAddress = "127.0.0.1";
         }
 
         try {
             serverPort = Integer.parseInt(serverNode.getAttribute("port"));
+            if(serverPort < 0 || serverPort > 65535) {
+                throw new IllegalArgumentException("Server port is not in range");
+            }
         }
         catch (NullPointerException e) {
             serverPort = 8080;
+        }
+        catch (NumberFormatException e) {
+            serverPort = 8080;
+            Toast.makeText(applicationContext,"Server port number must be an integer between 1 and 65535.  Defaulting to 8080.", Toast.LENGTH_LONG).show();
+        }
+        catch (IllegalArgumentException e) {
+            serverPort = 8080;
+            Toast.makeText(applicationContext,"Server port number must be an integer between 1 and 65535.  Defaulting to 8080.", Toast.LENGTH_LONG).show();
         }
 
         try {

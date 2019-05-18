@@ -1,6 +1,9 @@
 package com.micronet.bridgetechbusoccupancy.utils;
 
 import android.os.Handler;
+import android.widget.Toast;
+
+import com.micronet.bridgetechbusoccupancy.BusOccupancyApplication;
 import com.micronet.bridgetechbusoccupancy.repository.Bus;
 import com.micronet.bridgetechbusoccupancy.repository.BusDriver;
 import com.micronet.bridgetechbusoccupancy.repository.Settings;
