@@ -53,6 +53,14 @@ public class OutgoingMessage implements TimestampProvider {
     public static void resendPacket(short id) {
         if(unackedPackets.containsKey(id)) {
             Log.d(TAG,  "Resending packet with id " + id);
+            while (!DatagramSocketSingletonWrapper.getInstance().hasInternet()) {
+                Log.d(TAG, "Currently disconnected from internet");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             sendBytes(unackedPackets.get(id));
         }
     }

@@ -29,22 +29,41 @@ public class UdpInputRunnable implements Runnable {
     @Override
     public void run() {
         data = new byte[10];
-        try {
-            while (true) {
-                Log.d(TAG, "Waiting for a packet");
-                DatagramPacket packet = new DatagramPacket(data, data.length);
-                socket.receive(packet);
-                Log.d(TAG, "Received a packet of some sort");
-                IncomingMessage message = new IncomingMessage(packet.getData(), packet.getLength(), packet.getOffset());
-                Thread t = new Thread(new MessageHandler(message));
-                t.start();
+        while (true) {
+            while(!DatagramSocketSingletonWrapper.getInstance().hasInternet());
+            DatagramSocketSingletonWrapper.getInstance().connectToServer();
+            while(DatagramSocketSingletonWrapper.getInstance().hasInternet()) {
+                try {
+                    Log.d(TAG, "Waiting for a packet");
+                    DatagramPacket packet = new DatagramPacket(data, data.length);
+                    DatagramSocketSingletonWrapper.getInstance().getSocket().receive(packet);
+                    Log.d(TAG, "Received a packet of some sort");
+                    IncomingMessage message = new IncomingMessage(packet.getData(), packet.getLength(), packet.getOffset());
+                    Thread t = new Thread(new MessageHandler(message));
+                    t.start();
+                } catch (SocketException e) {
+                    Log.e(TAG, "SocketException: " + e.getMessage());
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                    continue;
+                } catch (UnknownHostException e) {
+                    Log.e(TAG, "UnknownHostException: " + e.getMessage());
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d(TAG, "No internet");
         }
     }
 
