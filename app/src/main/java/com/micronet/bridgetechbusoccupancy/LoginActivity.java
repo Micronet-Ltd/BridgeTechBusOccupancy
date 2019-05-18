@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragment.Lo
         super.onCreate(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
-        startService(new Intent(this, UdpService.class));
+
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);

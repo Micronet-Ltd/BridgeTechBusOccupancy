@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 import com.micronet.bridgetechbusoccupancy.SharedPreferencesSingleton;
 import com.micronet.bridgetechbusoccupancy.repository.Bus;
@@ -29,7 +30,8 @@ public class BusOccupancyApplication extends Application {
         instance = this;
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+//        filter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
+        DatagramSocketSingletonWrapper.getInstance().setContext(getApplicationContext());
         DatagramSocketSingletonWrapper.getInstance().connectToServer(new Runnable() {
             @Override
             public void run() {
@@ -37,6 +39,7 @@ public class BusOccupancyApplication extends Application {
             }
         });
         registerReceiver(new ConnectivityChangedReceiver(), filter);
+        startService(new Intent(this, UdpService.class));
     }
 
     public static BusOccupancyApplication getInstance() {
@@ -49,6 +52,15 @@ class ConnectivityChangedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, String.format("Received intent with action %s", intent.getAction()));
-        DatagramSocketSingletonWrapper.getInstance().connectToServer();
+        boolean isDisconnected = intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+        Log.d(TAG, String.format("Disconnected: %s", isDisconnected));
+//        if(isDisconnected) {
+//            DatagramSocketSingletonWrapper.getInstance().disconnectFromServer();
+//            DatagramSocketSingletonWrapper.getInstance().setHasInternet(false);
+//        }
+//        else {
+//            DatagramSocketSingletonWrapper.getInstance().connectToServer();
+//            DatagramSocketSingletonWrapper.getInstance().setHasInternet(false);
+//        }
     }
 }
